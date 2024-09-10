@@ -1,0 +1,38 @@
+version: '2.29.2'
+
+services:
+  database:
+    image: mysql:latest
+    volumes:
+      - msql:/var/bin/mysql
+    restart: always
+    environment:
+      - MYSQL_USER=kia
+      - MYSQL_PASSWORD=kia123
+      - MYSQL_ROOT_PASSWORD=IT12121999
+      - MYSQL_DATABASE=mydb
+    networks:
+      - webserver
+  
+  website:
+    image: wordpress:3306
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - WORDPRESS_DB_HOST=database
+      - WORDPRESS_DB_USER=kia
+      - WORDPRESS_DB_PASSWORD=kia123
+      - WORDPRESS_DB_NAME=mydb
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - webserver
+networks:
+  webserver:
+    driver: bridge
+    name: webserverNetwork
+volumes:
+  msql:
+  wordpress:
+
