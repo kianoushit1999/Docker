@@ -1,0 +1,43 @@
+
+services:
+
+  database:
+    image: postgres
+    restart: always
+    volumes:
+      - psql:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=drupal
+      - POSTGRES_USER=drupal
+      - POSTGRES_DB=drupal
+    networks:
+      - webservice
+  website:
+    image: drupal
+    restart: always
+    ports:
+      - 8083:80
+    depends_on:
+      - database
+    environment:
+      - DB_HOST=database
+      - DB_USER=drupal
+      - DB_PASSWORD=drupal
+      - DB_NAME=drupal
+    volumes:
+      - drupalM:/var/www/html/modules
+      - drupalP:/var/www/html/profiles
+      - drupalsi:/var/www/html/sites
+    networks:
+      - webservice
+networks:
+  webservice:
+    driver: bridge
+    name: webserviceNet
+volumes:
+  psql:
+  drupalM:
+  drupalP:
+  drupalsi:
